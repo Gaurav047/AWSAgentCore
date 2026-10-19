@@ -15,7 +15,9 @@ concurrency:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    # Set the RUNNER_LABELS repository variable to a JSON array (e.g. ["self-hosted","awsagentcore"])
+    # to run on a self-hosted runner; unset, jobs use GitHub-hosted Ubuntu.
+    runs-on: ${{ fromJSON(vars.RUNNER_LABELS || '"ubuntu-latest"') }}
     strategy:
       fail-fast: false
       matrix:
