@@ -8,6 +8,22 @@ from functools import lru_cache
 from zoneinfo import ZoneInfo
 
 
+def load_env() -> str | None:
+    """Load `.env` from the current directory (or the nearest parent that has one).
+
+    Variables already set in the environment win, so `.env` only fills in gaps. Set
+    APP_SKIP_DOTENV=1 to disable (the tests do this). Returns the loaded path, if any.
+    """
+    if os.environ.get("APP_SKIP_DOTENV"):
+        return None
+    from dotenv import find_dotenv, load_dotenv
+
+    path = find_dotenv(usecwd=True)
+    if path:
+        load_dotenv(path, override=False)
+    return path or None
+
+
 def _env(name: str, default: str | None = None) -> str | None:
     value = os.environ.get(name)
     return value if value not in (None, "") else default

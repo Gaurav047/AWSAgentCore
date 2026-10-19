@@ -52,8 +52,12 @@ services talk to each other over **MCP** and **A2A**.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env            # set AWS_REGION / BEDROCK_MODEL_ID / APP_TIMEZONE
-pytest                          # 38 offline tests, no AWS needed
+pytest                          # 40 offline tests, no AWS needed
 ```
+
+Every `appointment-app` command loads `.env` from the current directory or the nearest parent
+directory that has one. Variables already set in your shell take precedence over `.env`, and
+`APP_SKIP_DOTENV=1` turns loading off.
 
 To run the full stack you need AWS credentials with Bedrock model access. Start each service in its own terminal, or use `docker compose up --build`:
 
