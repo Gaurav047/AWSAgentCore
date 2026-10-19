@@ -1,0 +1,51 @@
+# Full local stack. Requires AWS credentials with Bedrock access in ~/.aws (mounted read-only).
+x-common: &common
+  build: .
+  env_file: .env
+  volumes:
+    - ~/.aws:/home/app/.aws:ro
+    - data:/data
+
+services:
+  mcp:
+    <<: *common
+    command: ["mcp"]
+    ports: ["8000:8000"]
+
+  scheduler:
+    <<: *common
+    command: ["scheduler", "--port", "9000"]
+    environment:
+      MCP_URL: http://mcp:8000/mcp
+      A2A_PUBLIC_URL: http://localhost:9001
+    ports: ["9001:9000"]
+    depends_on: [mcp]
+
+  reminder:
+    <<: *common
+    command: ["reminder", "--port", "9000"]
+    environment:
+      MCP_URL: http://mcp:8000/mcp
+      A2A_PUBLIC_URL: http://localhost:9002
+    ports: ["9002:9000"]
+    depends_on: [mcp]
+
+  orchestrator:
+    <<: *common
+    command: ["orchestrator"]
+    environment: &orchestrator_env
+      MCP_URL: http://mcp:8000/mcp
+      SCHEDULER_A2A_URL: http://scheduler:9000
+      REMINDER_A2A_URL: http://reminder:9000
+    ports: ["8080:8080"]
+    depends_on: [mcp, scheduler, reminder]
+
+  api:
+    <<: *common
+    command: ["api"]
+    environment: *orchestrator_env
+    ports: ["8081:8081"]
+    depends_on: [mcp, scheduler, reminder]
+
+volumes:
+  data:
