@@ -1,5 +1,7 @@
 # Agentic Appointment Manager
 
+[![tests](https://github.com/Gaurav047/AWSAgentCore/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Gaurav047/AWSAgentCore/actions/workflows/tests.yml)
+
 An appointment booking system run by AI agents, built on **Amazon Bedrock** (Claude) and
 **Bedrock AgentCore**. It uses **Strands Agents**, **LangChain** and **LangGraph**, and its
 services talk to each other over **MCP** and **A2A**.
